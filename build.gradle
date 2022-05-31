@@ -2,17 +2,23 @@ plugins {
     id "java-library"
 }
 
+sourceCompatibility = "11"
+targetCompatibility = "11"
+
 repositories {
     mavenCentral()
     maven { url "https://packages.confluent.io/maven/" }
 }
 
-dependencies {
-	implementation "org.apache.beam:beam-sdks-java-core:2.39.0"
-	implementation "org.apache.beam:beam-runners-direct-java:2.39.0"
-	implementation "org.apache.beam:beam-runners-google-cloud-dataflow-java:2.39.0"
-	implementation "org.slf4j:slf4j-api:1.7.36"
-	implementation "org.slf4j:slf4j-simple:1.7.36"
+dependencies {    
+    implementation "org.apache.beam:beam-sdks-java-core:2.39.0"
+    implementation "org.apache.beam:beam-runners-direct-java:2.39.0"
+    implementation "org.apache.beam:beam-runners-google-cloud-dataflow-java:2.39.0"
+    implementation "org.slf4j:slf4j-api:1.7.36"
+    implementation "org.slf4j:slf4j-simple:1.7.36"
+	
+    compileOnly "org.projectlombok:lombok:1.18.24"
+    annotationProcessor "org.projectlombok:lombok:1.18.24"
 }
 
 tasks.named("test") {
@@ -20,6 +26,13 @@ tasks.named("test") {
 }
 
 task execute(type: JavaExec) {
-    mainClass = "main.Main"
+    mainClass = "demo.main.Main"
+    classpath = sourceSets.main.runtimeClasspath
+    systemProperties System.getProperties()
+    args System.getProperty("exec.args", "").split()
+}
+
+task initEmulator(type: JavaExec) {
+    mainClass = "demo.emulator.SpannerEmulatorInitializer"
     classpath = sourceSets.main.runtimeClasspath
 }
